@@ -140,28 +140,38 @@ The following diagram illustrates the high-level workflow orchestrated by the `r
 
 ```mermaid
 graph TD
-    A[Start: Raw Data & Config] --> B(Phase I: Validation);
-    B --> C(Phase II: Data Cleansing & Feature Eng.);
-    C --> D(Phase III: NLP Signal Generation);
-    D --> E(Phase IV: LPPL Signal Generation);
-    E --> F(Phase V: ML Data Preparation);
-    F --> G(Phase VI: Model Training & Validation);
-    G --> H(Phase VII: Inference & Backtesting);
-    H --> I[End: Performance Report];
+    %% Step 1: Define ALL nodes with their full labels first.
+    A[Start: Raw Data & Config];
+    B(Phase I: Validation);
+    C(Phase II: Data Cleansing & Feature Eng.);
+    D(Phase III: NLP Signal Generation);
+    E(Phase IV: LPPL Signal Generation);
+    F(Phase V: ML Data Preparation);
+    G(Phase VI: Model Training & Validation);
+    H(Phase VII: Inference & Backtesting);
+    I[End: Performance Report];
 
+    %% Step 2: Define ALL links between the nodes at the top level.
+    A --> B;
+    B --> C;
+    C --> D;
+    D -- Hype Index & Sentiment --> E;
+    E -- BubbleScore --> F;
+    F --> G;
+    G -- Trained Model --> H;
+    H --> I;
+
+    %% Step 3: Use subgraphs ONLY for visual grouping of pre-defined nodes.
     subgraph Phase III
-        %% By adding extra dashes, we push the label away from the start node (D)
-        %% and toward the end node (E), clearing the subgraph title.
-        D ---- Hype Index & Sentiment ---> E;
+        D;
     end
 
     subgraph Phase IV
-        E -- BubbleScore --> F;
+        E;
     end
 
     subgraph Phase VI
-        %% Same technique applied here to clear the "Phase VI" title.
-        G ---- Trained Model ---> H;
+        G;
     end
 ```
 
