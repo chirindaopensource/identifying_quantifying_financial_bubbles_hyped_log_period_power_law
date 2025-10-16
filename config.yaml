@@ -1,0 +1,145 @@
+﻿# ==============================================================================
+# UNIFIED CONFIGURATION FOR THE HLPPL STUDY REPLICATION
+# ==============================================================================
+# This YAML file contains all non-data structure input parameters required
+# to reproduce the study with high fidelity. It is designed to be loaded
+# at the beginning of a master script.
+# ==============================================================================
+
+# --------------------------------------------------------------------------
+# PHASE I & II: DESCRIPTIVE MODEL & DATA PROCESSING PARAMETERS
+# --------------------------------------------------------------------------
+# These parameters govern the initial transformation of raw data into the
+# core analytical construct of the study: the Bubble Score.
+# --------------------------------------------------------------------------
+descriptive_model:
+  lppl_fitting:
+    # Source: The paper does not specify the window size, but a value between
+    # 100 and 250 is standard for daily data. This is a critical parameter
+    # that requires sensitivity analysis.
+    rolling_window_size: 250  # Unit: trading days
+
+    # Source: Section 2.1.1 and standard LPPL literature. These are the
+    # mathematical constraints applied during the non-linear optimization.
+    parameter_constraints:
+      B: {min: -.inf, max: 0}
+      m: {min: 0.01, max: 0.99} # Kept slightly away from 0 and 1 for stability
+      omega: {min: 1.0, max: .inf}
+
+  bubble_score_synthesis:
+    # Source: Equation (14) in Section 3.5. The paper does not specify the
+    # weights. For a baseline replication, they are set to 1.0.
+    alpha_1_hype_weight: 1.0
+    alpha_2_sentiment_weight: 1.0
+
+  episode_labeling:
+    # Source: Section 4.2.2, "Labeling", Principle 1.
+    significance_threshold_tau: 0.8
+
+    # Source: Section 4.2.2, "Labeling", Principle 3.
+    min_duration_d_min: 10  # Unit: trading days
+
+# --------------------------------------------------------------------------
+# PHASE III: PREDICTIVE MODEL (TRANSFORMER) PARAMETERS
+# --------------------------------------------------------------------------
+# These parameters define the architecture, training, and optimization of
+# the core deep learning model.
+# --------------------------------------------------------------------------
+predictive_model:
+  data_preparation:
+    # Defines the lookback period for creating input sequences for the Transformer.
+    sequence_length: 60 # Unit: trading days
+
+    # Defines the chronological 80-10-10 split for training, validation, and testing.
+    dataset_split_ratio:
+      train: 0.8
+      validation: 0.1
+      test: 0.1
+
+  architecture:
+    # Defines the dimensions and complexity of the Transformer model.
+    embedding_dim: 128
+    num_encoder_layers: 4
+    num_attention_heads: 8
+    mlp_hidden_dim_ratio: 4 # Feed-forward layer dim = 4 * embedding_dim
+    prediction_head_hidden_dim: 64
+
+  training:
+    # Standard deep learning settings.
+    num_epochs: 100
+    batch_size: 64
+
+    # Source: Section "Regularization and Overfitting Prevention".
+    dropout_rate: 0.2
+
+    # Source: Section "Combined Loss Function" and Equation (15).
+    # Equal weighting is the most neutral starting point for replication.
+    loss_function_weights:
+      lambda_1_huber: 1.0
+      lambda_2_corr: 1.0
+      lambda_3_r_squared: 1.0
+      lambda_4_cons: 1.0
+      lambda_5_smooth: 1.0
+
+  optimizer:
+    # AdamW is a robust choice that includes proper weight decay.
+    name: "AdamW"
+    learning_rate: 0.0001 # 1e-4
+    weight_decay: 0.01 # 1e-2
+
+    # Source: Section "Regularization and Overfitting Prevention".
+    scheduler: "OneCycleLR"
+
+    # Source: Section "Regularization and Overfitting Prevention".
+    gradient_clipping_threshold: 0.5
+
+  early_stopping:
+    # Standard practice for preventing overfitting.
+    patience: 10 # Unit: epochs
+    monitor_metric: "validation_loss"
+
+# --------------------------------------------------------------------------
+# NLP MODEL SETTINGS
+# --------------------------------------------------------------------------
+# These parameters specify the exact models and settings for the NLP
+# feature extraction pipeline.
+# --------------------------------------------------------------------------
+nlp_settings:
+  sentiment_model:
+    # Source: Section 4.2.1 "Sentiment Processing Using FinBERT".
+    huggingface_model_name: "ProsusAI/finbert"
+    task: "text-classification"
+
+  topic_model:
+    # Source: Section 4.2.1. The paper names BERTopic as the tool.
+    name: "BERTopic"
+    umap_n_neighbors: 15
+    hdbscan_min_cluster_size: 10
+    embedding_model: "all-MiniLM-L6-v2" # A standard default for BERTopic
+
+# --------------------------------------------------------------------------
+# PHASE IV: BACKTESTING & STRATEGY EVALUATION PARAMETERS
+# --------------------------------------------------------------------------
+# These parameters define the rules and market conditions for the final
+# trading strategy simulation.
+# --------------------------------------------------------------------------
+backtesting:
+  strategy_rules:
+    # Source: Section 6.1, "Multi-Horizon Prediction Strategy".
+    entry_threshold_theta_1: 0.7
+    exit_threshold_theta_2: 0.3
+
+    # The paper tests all horizons from 1 to 5 days ahead.
+    prediction_horizons_to_test: [1, 2, 3, 4, 5] # Unit: trading days
+
+  risk_management:
+    # Source: Section 6.1, "Risk Management".
+    stop_loss_percentage: 0.15 # 15%
+    max_position_size_percentage: 0.50 # 50% of capital
+
+  market_assumptions:
+    # Source: Section 6.1.
+    transaction_cost_per_trade: 0.001 # 0.1% or 10 basis points
+
+    # Source: Table 4 Note.
+    risk_free_rate_annual: 0.02 # 2%
