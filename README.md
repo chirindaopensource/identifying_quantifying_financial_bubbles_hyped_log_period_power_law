@@ -149,15 +149,15 @@ graph TD
     G --> H(Phase VII: Inference & Backtesting);
     H --> I[End: Performance Report];
 
-    subgraph 
+    subgraph Phase III
         D -- Hype Index & Sentiment --> E;
     end
 
-    subgraph 
+    subgraph Phase IV
         E -- BubbleScore --> F;
     end
 
-    subgraph
+    subgraph Phase VI
         G -- Trained Model --> H;
     end
 ```
