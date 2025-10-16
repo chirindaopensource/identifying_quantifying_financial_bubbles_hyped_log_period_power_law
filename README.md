@@ -1,0 +1,1 @@
+# identifying_quantifying_financial_bubbles_hyped_log_period_power_law
