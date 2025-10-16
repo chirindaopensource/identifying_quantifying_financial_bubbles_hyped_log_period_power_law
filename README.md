@@ -140,6 +140,7 @@ The following diagram illustrates the high-level workflow orchestrated by the `r
 
 ```mermaid
 graph TD
+    %% Main Workflow Nodes
     A[Start: Raw Data & Config] --> B(Phase I: Validation);
     B --> C(Phase II: Data Cleansing & Feature Eng.);
     C --> D(Phase III: NLP Signal Generation);
@@ -149,17 +150,30 @@ graph TD
     G --> H(Phase VII: Inference & Backtesting);
     H --> I[End: Performance Report];
 
+    %% Subgraph Definitions with Explicit Node-to-Node Links
     subgraph Phase III
-        D -- Hype Index & Sentiment --> E;
+        D_out(( )); %% Invisible exit node
+        D -- Hype Index & Sentiment --> D_out;
     end
 
     subgraph Phase IV
-        E -- BubbleScore --> F;
+        E_in(( )); %% Invisible entry node
+        E_in --> E;
     end
 
     subgraph Phase VI
-        G -- Trained Model --> H;
+        G_out(( )); %% Invisible exit node
+        G -- Trained Model --> G_out;
     end
+    
+    %% Explicit links between invisible nodes to control arrow routing
+    D_out --> E_in;
+    G_out --> H;
+
+    %% Style Definitions for Invisible Nodes
+    style D_out fill:none,stroke:none
+    style E_in fill:none,stroke:none
+    style G_out fill:none,stroke:none
 ```
 
 ## Prerequisites
