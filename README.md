@@ -144,36 +144,30 @@ graph TD
     A[Start: Raw Data & Config] --> B(Phase I: Validation);
     B --> C(Phase II: Data Cleansing & Feature Eng.);
     C --> D(Phase III: NLP Signal Generation);
-    D --> E(Phase IV: LPPL Signal Generation);
+    
+    %% Explicit, labeled link between the last node of Phase III and the first of Phase IV
+    D -- Hype Index & Sentiment --> E(Phase IV: LPPL Signal Generation);
+    
     E --> F(Phase V: ML Data Preparation);
     F --> G(Phase VI: Model Training & Validation);
-    G --> H(Phase VII: Inference & Backtesting);
+    
+    %% Explicit, labeled link between the last node of Phase VI and the first of Phase VII
+    G -- Trained Model --> H(Phase VII: Inference & Backtesting);
+    
     H --> I[End: Performance Report];
 
-    %% Subgraph Definitions with Explicit Node-to-Node Links
+    %% Subgraph definitions are now purely for visual grouping and contain no links.
     subgraph Phase III
-        D_out(( )); %% Invisible exit node
-        D -- Hype Index & Sentiment --> D_out;
+        D
     end
 
     subgraph Phase IV
-        E_in(( )); %% Invisible entry node
-        E_in --> E;
+        E
     end
 
     subgraph Phase VI
-        G_out(( )); %% Invisible exit node
-        G -- Trained Model --> G_out;
+        G
     end
-    
-    %% Explicit links between invisible nodes to control arrow routing
-    D_out --> E_in;
-    G_out --> H;
-
-    %% Style Definitions for Invisible Nodes
-    style D_out fill:none,stroke:none
-    style E_in fill:none,stroke:none
-    style G_out fill:none,stroke:none
 ```
 
 ## Prerequisites
