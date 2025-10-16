@@ -1,0 +1,129 @@
+﻿# ==============================================================================
+# requirements.txt
+# 
+# Dependency specification for the Hyped Log-Periodic Power Law (HLPPL) Model
+# implementation.
+#
+# This file pins all dependencies to specific versions to ensure reproducibility
+# across development, testing, and production environments. The version numbers
+# reflect a stable, tested configuration as of Q4 2024/Q1 2025.
+#
+# Installation:
+#   pip install -r requirements.txt
+#
+# For GPU support with PyTorch, you may need to install with CUDA-specific
+# wheels. See: https://pytorch.org/get-started/locally/
+#
+# Python Version Requirement: >=3.9,<3.13
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Core Scientific Computing Stack
+# ------------------------------------------------------------------------------
+numpy>=1.24.0,<2.0.0          # Numerical computing foundation
+pandas>=2.0.0,<3.0.0          # Time series and tabular data manipulation
+scipy>=1.11.0,<2.0.0          # Scientific computing and optimization algorithms
+
+# ------------------------------------------------------------------------------
+# Deep Learning Framework (PyTorch)
+# ------------------------------------------------------------------------------
+# Note: These versions provide stable Transformer support and are compatible
+# with CUDA 11.8 / 12.1. For CPU-only installation, use the default PyPI wheels.
+# For GPU, refer to: https://pytorch.org/get-started/locally/
+torch>=2.1.0,<2.5.0           # Core PyTorch framework
+torchvision>=0.16.0,<0.20.0   # Vision utilities (often installed with torch)
+
+# ------------------------------------------------------------------------------
+# Natural Language Processing & Transformer Models
+# ------------------------------------------------------------------------------
+transformers>=4.35.0,<5.0.0   # Hugging Face Transformers (BERT, FinBERT)
+sentence-transformers>=2.2.0,<3.0.0  # Sentence embeddings for BERTopic
+tokenizers>=0.15.0,<1.0.0     # Fast tokenization library (used by transformers)
+huggingface-hub>=0.19.0,<1.0.0  # Model repository access
+
+# ------------------------------------------------------------------------------
+# Topic Modeling & Clustering Stack
+# ------------------------------------------------------------------------------
+bertopic>=0.16.0,<1.0.0       # BERTopic for thematic document filtering
+umap-learn>=0.5.4,<1.0.0      # Dimensionality reduction for BERTopic
+hdbscan>=0.8.33,<1.0.0        # Density-based clustering for BERTopic
+
+# ------------------------------------------------------------------------------
+# Machine Learning Utilities
+# ------------------------------------------------------------------------------
+scikit-learn>=1.3.0,<2.0.0    # Required by BERTopic, umap-learn, and general ML metrics
+
+# ------------------------------------------------------------------------------
+# Visualization
+# ------------------------------------------------------------------------------
+matplotlib>=3.7.0,<4.0.0      # Plotting and visualization
+seaborn>=0.13.0,<1.0.0        # Statistical data visualization
+
+# ------------------------------------------------------------------------------
+# Progress Monitoring & UI
+# ------------------------------------------------------------------------------
+tqdm>=4.66.0,<5.0.0           # Progress bars for long-running operations
+
+# ------------------------------------------------------------------------------
+# Optional but Recommended: Additional Utilities
+# ------------------------------------------------------------------------------
+# Uncomment these if your pipeline uses them for data persistence, configuration,
+# or enhanced numerical stability:
+
+# joblib>=1.3.0,<2.0.0        # Efficient serialization and parallel computing
+# pyyaml>=6.0.0,<7.0.0        # Configuration file parsing (if using YAML configs)
+# numba>=0.58.0,<1.0.0        # JIT compilation for numerical kernels (optional speedup)
+
+# ------------------------------------------------------------------------------
+# Development & Quality Assurance (Optional - for development environments)
+# ------------------------------------------------------------------------------
+# Uncomment these for development, testing, and code quality:
+
+# pytest>=7.4.0,<8.0.0        # Testing framework
+# pytest-cov>=4.1.0,<5.0.0    # Coverage reporting
+# black>=23.0.0,<24.0.0       # Code formatting
+# flake8>=6.1.0,<7.0.0        # Linting
+# mypy>=1.7.0,<2.0.0          # Static type checking
+# isort>=5.12.0,<6.0.0        # Import sorting
+
+# ==============================================================================
+# Version Rationale & Compatibility Notes
+# ==============================================================================
+#
+# 1. **PyTorch 2.1+**: Required for stable Transformer implementation with
+#    efficient attention mechanisms and improved autograd.
+#
+# 2. **Transformers 4.35+**: Ensures compatibility with recent FinBERT checkpoints
+#    and provides the `pipeline` API for inference.
+#
+# 3. **BERTopic 0.16+**: Includes critical bug fixes for UMAP integration and
+#    c-TF-IDF calculation.
+#
+# 4. **NumPy <2.0**: NumPy 2.0 introduced breaking changes. This pin ensures
+#    compatibility with the current scipy and pandas versions.
+#
+# 5. **Python 3.9-3.12**: Tested range. Python 3.13 support depends on PyTorch
+#    and other binary wheels becoming available.
+#
+# 6. **CUDA Compatibility**: If using GPU, ensure your CUDA toolkit version
+#    matches the PyTorch wheel. Check: torch.cuda.is_available()
+#
+# ==============================================================================
+# Known Issues & Troubleshooting
+# ==============================================================================
+#
+# Issue 1: UMAP installation fails on Windows
+# Solution: Install Visual C++ Build Tools or use conda for umap-learn
+#
+# Issue 2: Transformers model download timeouts
+# Solution: Increase timeout or download models manually to HF cache
+#   export TRANSFORMERS_CACHE=/path/to/cache
+#
+# Issue 3: OOM errors during Transformer training
+# Solution: Reduce batch size, use gradient accumulation, or enable
+#   torch.cuda.amp for mixed precision training
+#
+# Issue 4: HDBSCAN compilation errors
+# Solution: Ensure you have a C++ compiler (GCC on Linux, MSVC on Windows)
+#
+# ==============================================================================
