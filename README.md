@@ -44,7 +44,6 @@ The project provides a complete, end-to-end computational framework for replicat
 - [Methodology Implemented](#methodology-implemented)
 - [Core Components (Notebook Structure)](#core-components-notebook-structure)
 - [Key Callable: `execute_full_study`](#key-callable-execute_full_study)
-- [Workflow Diagram](#workflow-diagram)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Input Data Structure](#input-data-structure)
@@ -133,31 +132,6 @@ The `identifying_quantifying_financial_bubbles_hyped_log_period_power_law_draft.
 The project is designed around a single, top-level user-facing interface function:
 
 -   **`execute_full_study`:** This master orchestrator function, located in the final section of the notebook, runs the entire automated research pipeline from end-to-end. A single call to this function reproduces the entire computational portion of the project, from data validation to the final report.
-
-## Workflow Diagram
-
-The following diagram illustrates the high-level workflow orchestrated by the `run_hlppl_pipeline` function, which is the core engine called by `execute_full_study`.
-
-```mermaid
-graph TD
-    A[Start: Raw Data & Config] --> B(Phase I: Validation);
-    B --> C(Phase II: Data Cleansing & Feature Eng.);
-    C --> D(Phase III: NLP Signal Generation);
-    D --> E(Phase IV: LPPL Signal Generation);
-    E --> F(Phase V: ML Data Preparation);
-    F --> G(Phase VI: Model Training & Validation);
-    G --> H(Phase VII: Inference & Backtesting);
-    H --> I[End: Performance Report];
-    subgraph "                    Phase III"
-        D -- Hype Index & Sentiment --> E;
-    end
-    subgraph "                    Phase IV"
-        E -- BubbleScore --> F;
-    end
-    subgraph "                    Phase VI"
-        G -- Trained Model --> H;
-    end
-```
 
 ## Prerequisites
 
